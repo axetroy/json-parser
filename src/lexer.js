@@ -30,15 +30,21 @@ function jsonLexer(input) {
 		}
 	}
 
-	function makeToken(type, value, startLine, startColumn) {
+	function makeToken(type, value, startOffset, endOffSet, startLine, startColumn) {
 		return {
 			type,
 			value,
-			// start: Math.max(0, i - value.length),
-			// end: i,
 			loc: {
-				start: { line: startLine, column: startColumn },
-				end: { line, column },
+				start: {
+					line: startLine,
+					column: startColumn,
+					offset: startOffset,
+				},
+				end: {
+					line,
+					column,
+					offset: endOffSet,
+				},
 			},
 		};
 	}
@@ -53,45 +59,47 @@ function jsonLexer(input) {
 
 		const startLine = line;
 		const startColumn = column;
+		const startOffset = i;
 
 		if (char === "{") {
-			tokens.push(makeToken("LBRACE", "{", startLine, startColumn));
+			tokens.push(makeToken("LBRACE", "{", startOffset, i + 1, startLine, startColumn));
 			advance();
 			continue;
 		}
 
 		if (char === "}") {
-			tokens.push(makeToken("RBRACE", "}", startLine, startColumn));
+			tokens.push(makeToken("RBRACE", "}", startOffset, i + 1, startLine, startColumn));
 			advance();
 			continue;
 		}
 
 		if (char === "[") {
-			tokens.push(makeToken("LBRACKET", "[", startLine, startColumn));
+			tokens.push(makeToken("LBRACKET", "[", startOffset, i + 1, startLine, startColumn));
 			advance();
 			continue;
 		}
 
 		if (char === "]") {
-			tokens.push(makeToken("RBRACKET", "]", startLine, startColumn));
+			tokens.push(makeToken("RBRACKET", "]", startOffset, i + 1, startLine, startColumn));
 			advance();
 			continue;
 		}
 
 		if (char === ":") {
-			tokens.push(makeToken("COLON", ":", startLine, startColumn));
+			tokens.push(makeToken("COLON", ":", startOffset, i + 1, startLine, startColumn));
 			advance();
 			continue;
 		}
 
 		if (char === ",") {
-			tokens.push(makeToken("COMMA", ",", startLine, startColumn));
+			tokens.push(makeToken("COMMA", ",", startOffset, i + 1, startLine, startColumn));
 			advance();
 			continue;
 		}
 
 		if (char === '"') {
-			let value = "";
+			const quote = input[i];
+			let value = quote;
 			advance(); // skip opening quote
 			while (i < length && input[i] !== '"') {
 				if (input[i] === "\\") {
@@ -101,6 +109,7 @@ function jsonLexer(input) {
 						throw new SyntaxError(`Unclosed string literal at ${startLine}:${startColumn}`);
 					}
 					value += input[i];
+					advance(); // skip escaped character
 				} else {
 					value += input[i];
 				}
@@ -109,8 +118,9 @@ function jsonLexer(input) {
 			if (i >= length) {
 				throw new SyntaxError(`Unclosed string literal at ${startLine}:${startColumn}`);
 			}
-			tokens.push(makeToken("STRING", value, startLine, startColumn));
+			value += input[i]; // add closing quote
 			advance(); // skip closing quote
+			tokens.push(makeToken("STRING", value, startOffset, startOffset + value.length, startLine, startColumn));
 			continue;
 		}
 
@@ -142,7 +152,7 @@ function jsonLexer(input) {
 				}
 			}
 
-			tokens.push(makeToken("NUMBER", value, startLine, startColumn));
+			tokens.push(makeToken("NUMBER", value, startOffset, startOffset + value.length, startLine, startColumn));
 			continue;
 		}
 
@@ -153,9 +163,9 @@ function jsonLexer(input) {
 				advance();
 			}
 			if (value === "true" || value === "false") {
-				tokens.push(makeToken("BOOLEAN", value, startLine, startColumn));
+				tokens.push(makeToken("BOOLEAN", value, startOffset, startOffset + value.length, startLine, startColumn));
 			} else if (value === "null") {
-				tokens.push(makeToken("NULL", value, startLine, startColumn));
+				tokens.push(makeToken("NULL", value, startOffset, startOffset + value.length, startLine, startColumn));
 			} else {
 				throw new SyntaxError(`Unknown literal '${value}' at ${startLine}:${startColumn}`);
 			}
