@@ -62,38 +62,38 @@ function jsonLexer(input) {
 		const startOffset = i;
 
 		if (char === "{") {
-			tokens.push(makeToken("LBRACE", "{", startOffset, i + 1, startLine, startColumn));
 			advance();
+			tokens.push(makeToken("LBRACE", "{", startOffset, i, startLine, startColumn));
 			continue;
 		}
 
 		if (char === "}") {
-			tokens.push(makeToken("RBRACE", "}", startOffset, i + 1, startLine, startColumn));
 			advance();
+			tokens.push(makeToken("RBRACE", "}", startOffset, i, startLine, startColumn));
 			continue;
 		}
 
 		if (char === "[") {
-			tokens.push(makeToken("LBRACKET", "[", startOffset, i + 1, startLine, startColumn));
 			advance();
+			tokens.push(makeToken("LBRACKET", "[", startOffset, i, startLine, startColumn));
 			continue;
 		}
 
 		if (char === "]") {
-			tokens.push(makeToken("RBRACKET", "]", startOffset, i + 1, startLine, startColumn));
 			advance();
+			tokens.push(makeToken("RBRACKET", "]", startOffset, i, startLine, startColumn));
 			continue;
 		}
 
 		if (char === ":") {
-			tokens.push(makeToken("COLON", ":", startOffset, i + 1, startLine, startColumn));
 			advance();
+			tokens.push(makeToken("COLON", ":", startOffset, i, startLine, startColumn));
 			continue;
 		}
 
 		if (char === ",") {
-			tokens.push(makeToken("COMMA", ",", startOffset, i + 1, startLine, startColumn));
 			advance();
+			tokens.push(makeToken("COMMA", ",", startOffset, i, startLine, startColumn));
 			continue;
 		}
 
