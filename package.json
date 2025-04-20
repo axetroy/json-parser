@@ -1,0 +1,57 @@
+{
+    "name": "babel-transform-webpack-plugin",
+    "version": "1.1.0",
+    "private": false,
+    "description": "A webpack plugin to transform javascript chunks using babel.",
+    "sideEffects": false,
+    "files": [
+        "dist"
+    ],
+    "type": "module",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.mjs",
+    "scripts": {
+        "test": "node --test **/*.test.mjs **/**/*.test.mjs",
+        "test:update-snapshot": "node --import tsx --test-update-snapshots --test **/*.test.ts **/**/*.test.ts ",
+        "build": "knip && rslib build",
+        "prepack": "npm run build"
+    },
+    "author": "Axetroy <axetroy.dev@gmail.com>",
+    "license": "SEE LICENSE IN LICENSE",
+    "devDependencies": {
+        "@rslib/core": "^0.6.0",
+        "@types/babel__core": "^7.20.5",
+        "@types/diff": "^7.0.2",
+        "@types/node": "^22.14.1",
+        "babel-plugin-transform-fs-promises": "^1.0.2",
+        "diff": "^7.0.0",
+        "knip": "^5.46.3",
+        "memfs": "^4.17.0",
+        "memfs3": "npm:memfs@3",
+        "outdent": "^0.8.0",
+        "tsx": "^4.19.2",
+        "typescript": "^5.8.2",
+        "unionfs": "^4.5.4",
+        "unionfs2": "npm:unionfs@2",
+        "webpack": "^5.98.0",
+        "webpack4": "npm:webpack@4"
+    },
+    "keywords": [
+        "webpack",
+        "plugin",
+        "transform",
+        "fs-promises"
+    ],
+    "homepage": "https://github.com/axetroy/babel-transform-webpack-plugin#readme",
+    "bugs": {
+        "url": "https://github.com/axetroy/babel-transform-webpack-plugin/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/axetroy/babel-transform-webpack-plugin.git"
+    },
+    "peerDependencies": {
+        "@babel/core": "^7.0.0",
+        "webpack": "^4.0.0 || ^5.0.0"
+    }
+}
